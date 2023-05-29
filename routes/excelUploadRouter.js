@@ -21,9 +21,9 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage});
 
 
-const productsCtrl = require('../controllers/productsCtrl');
+const productsCtrls = require('../controllers/productsCtrl');
 
-excelUpload.post('/upload-products', upload.single('file'), productsCtrl.uploadAllProducts);
+excelUpload.post('/upload-products', upload.single('file'), productsCtrls.uploadAllProducts);
 
 
 

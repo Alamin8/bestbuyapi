@@ -14,7 +14,7 @@ const productCtrl ={
     },
     getQueryProducts:async (req, res) => {
         try{
-            const product = await products.findById(req.user.id);
+            // const product = await products.findById(req.user.id);
         }catch{
 
         }
