@@ -7,4 +7,4 @@ router.get('/products', productCtrl.getAllProducts)
 
 
 
-module.exports = router
+module.exports = router;
