@@ -53,4 +53,4 @@ const productCtrl ={
 
 }
 
-module.exports=productCtrl;
+module.exports =productCtrl;
