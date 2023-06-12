@@ -81,7 +81,7 @@ const userCtrl = {
   logout: async (req, res) => {
     try {
       res.clearCookie("refreshtoken", { path: "/user/refresh_token" });
-      return res.send({status:200, success: success, msg:'Logged out!'});
+      return res.send({status:200, msg:'Logged out!'});
       // res.json({ msg: "Logged out" });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
