@@ -40,7 +40,7 @@ const userCtrl = {
         maxAge: 7*24*60*60*1000 // 7 days
       });
 
-      return res.send({status:200, success: success, msg:'Register Success!', accesstoken});
+      return res.send({status:200, msg:'Register Success!', refreshtoken});
 
       // res.json({ accesstoken });
       // res.json({ msg: "Register Success!" });
@@ -71,7 +71,7 @@ const userCtrl = {
         path: "/user/refresh_token",
         maxAge: 7*24*60*60*1000 // 7 days
       });
-      return res.send({status:200, success: success, msg:'Login Success!', accesstoken});
+      return res.send({status:200, msg:'Login Success!', accesstoken});
       // res.json({ accesstoken });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
@@ -99,7 +99,7 @@ const userCtrl = {
           return res.status(400).json({ msg: "Please Login or Register" });
 
         const accesstoken = createAccessToken({ id: user.id });
-        return res.send({status:200, success: success, user, accesstoken});
+        return res.send({status:200, user, accesstoken});
         // res.json({ user, accesstoken });
       });
     } catch (err) {
@@ -111,7 +111,7 @@ const userCtrl = {
     try {
       const user = await Users.findById(req.user.id).select('-password') //select means thats not come from database
       if(!user) return res.status(500).json({ msg: "User does not exist." });
-      return res.send({status:200, success: success, user});
+      return res.send({status:200, user});
       // res.json(user)
     } catch (err) {
       return res.status(500).json({ msg: err.message });
