@@ -7,16 +7,55 @@ const productCtrl ={
     getAllProducts:async (req, res) => {
         try{
             const allProducts = await Products.find().limit(500);
-            res.json(allProducts);
+            return res.json(allProducts);
         }catch(error){
-            res.send({status:400, success: false, msg:error.message});
+            return res.send({status:400, success: false, msg:'Something went wrong'});
         }
     },
-    getQueryProducts:async (req, res) => {
+    getScanQueryProducts:async (req, res) => {
         try{
-            // const product = await products.findById(req.user.id);
-        }catch{
+            const {scanCode} = req.body;
+            const scanProduct = await Products.findOne({barcode:scanCode});
 
+            if(!scanProduct){
+                const newScanProduct = await Products.findOne({item_code:scanCode});
+                if(!newScanProduct){
+                   return res.send({status:400, success: false, msg:'No Product Founds'});
+                }
+                return res.json(newScanProduct);
+            }else{
+                return res.json(scanProduct);
+            }
+    
+            
+        }catch(err){
+            return  res.send({status:400, success: false, msg:err.msg});
+        }
+    },
+    getSearchQueryProducts:async (req, res) => {
+        try{
+            const {searchText} = req.body;
+            const searchProduct = await Products.findOne({product_name:searchText});
+
+            if(!searchProduct){
+                const newsearchProduct = await Products.findOne({barcode:searchText});
+
+                if(!newsearchProduct){
+                    const finalsearchProduct = await Products.findOne({item_code:searchText});
+
+                    if(!finalsearchProduct){
+                        return res.send({status:400, success: false, msg:'No Product Founds'});
+                    }
+                    return res.json(finalsearchProduct);
+                }
+                return res.json(newsearchProduct);
+            }else{
+                return res.json(searchProduct);
+            }
+    
+            
+        }catch(err){
+            return  res.send({status:400, success: false, msg:err.msg});
         }
     },
     uploadAllProducts:async (req, res) => {
@@ -38,9 +77,9 @@ const productCtrl ={
                 };
                 await Products.insertMany(products);
             })
-            res.send({status:200, success: true, msg:'Ok Done'});
+             res.send({status:200, success: true, msg:'Ok Done'});
         }catch(error){
-            res.send({status:400, success: false, msg:error.message});
+            res.send({status:400, success: false, msg:'Something went wrong'});
         }
     },
     uploadSingleProducts:async (req, res) => {
