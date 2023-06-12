@@ -40,47 +40,53 @@ const userCtrl = {
         maxAge: 7*24*60*60*1000 // 7 days
       });
 
-      res.json({ accesstoken });
-      res.json({ msg: "Register Success!" });
+      return res.send({status:200, success: success, msg:'Register Success!', accesstoken});
+
+      // res.json({ accesstoken });
+      // res.json({ msg: "Register Success!" });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
   },
 
-//   login: async (req, res) => {
-//     try {
-//       const { email, password } = req.body;
+  login: async (req, res) => {
+    try {
+      const {stuff_id, email, password } = req.body;
 
-//       const user = await Users.findOne({ email });
-//       if (!user) return res.status(400).json({ msg: "User does not exist." });
+      const stuff = await Users.findOne({ stuff_id });
+      if (!stuff) return res.status(400).json({ msg: "User does not exist." });
 
-//       const isMatch = await bcrypt.compare(password, user.password);
-//       if (!isMatch) return res.status(400).json({ msg: "Incorrect password." });
+      const user = await Users.findOne({ email });
+      if (!user) return res.status(400).json({ msg: "User does not exist." });
 
-//       // if login success, create access token and refresh token
-//       const accesstoken = createAccessToken({ id: user._id });
-//       const refreshtoken = createRefreshToken({ id: user._id });
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(400).json({ msg: "Incorrect password." });
 
-//       res.cookie("refreshtoken", refreshtoken, {
-//         httpOnly: true,
-//         path: "/user/refresh_token",
-//         maxAge: 7*24*60*60*1000 // 7 days
-//       });
+      // if login success, create access token and refresh token
+      const accesstoken = createAccessToken({ id: user._id });
+      const refreshtoken = createRefreshToken({ id: user._id });
 
-//       res.json({ accesstoken });
-//     } catch (err) {
-//       return res.status(500).json({ msg: err.message });
-//     }
-//   },
+      res.cookie("refreshtoken", refreshtoken, {
+        httpOnly: true,
+        path: "/user/refresh_token",
+        maxAge: 7*24*60*60*1000 // 7 days
+      });
+      return res.send({status:200, success: success, msg:'Login Success!', accesstoken});
+      // res.json({ accesstoken });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 
-//   logout: async (req, res) => {
-//     try {
-//       res.clearCookie("refreshtoken", { path: "/user/refresh_token" });
-//       res.json({ msg: "Logged out" });
-//     } catch (err) {
-//       return res.status(500).json({ msg: err.message });
-//     }
-//   },
+  logout: async (req, res) => {
+    try {
+      res.clearCookie("refreshtoken", { path: "/user/refresh_token" });
+      return res.send({status:200, success: success, msg:'Logged out!'});
+      // res.json({ msg: "Logged out" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 
   refreshToken: (req, res) => {
     try {
@@ -93,47 +99,24 @@ const userCtrl = {
           return res.status(400).json({ msg: "Please Login or Register" });
 
         const accesstoken = createAccessToken({ id: user.id });
-
-        res.json({ user, accesstoken });
+        return res.send({status:200, success: success, user, accesstoken});
+        // res.json({ user, accesstoken });
       });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
   },
 
-//   getUser: async (req, res) => {
-//     try {
-//       const user = await Users.findById(req.user.id).select('-password') //select means thats not come from database
-//       if(!user) return res.status(500).json({ msg: "User does not exist." });
-
-//       res.json(user)
-//     } catch (err) {
-//       return res.status(500).json({ msg: err.message });
-//     }
-//   },
-//   addCart: async (req, res)=>{
-//     try{
-//       const user = await Users.findById(req.user.id)
-//        if(!user)  return res.status(400).json({msg: "User does not exist."})
-
-//        await Users.findOneAndUpdate({_id:req.user.id},{
-//          cart:req.body.cart
-//        })
-
-//        return res.json({msg: "Added to cart"})
-//     }catch(err){
-//       return res.status(500).json({ msg: err.message });
-//     }
-//   },
-//   history: async( req, res)=>{
-//     try {
-//       const history = await Payments.find({user_id: req.user.id})
-
-//       res.json(history)
-//     } catch (err) {
-//       return res.status(500).json({ msg: err.message });
-//     }
-//   }
+  getUser: async (req, res) => {
+    try {
+      const user = await Users.findById(req.user.id).select('-password') //select means thats not come from database
+      if(!user) return res.status(500).json({ msg: "User does not exist." });
+      return res.send({status:200, success: success, user});
+      // res.json(user)
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 
 };
 
