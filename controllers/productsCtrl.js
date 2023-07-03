@@ -6,7 +6,7 @@ const productCtrl ={
     // This is get as MRP
     getAllProducts:async (req, res) => {
         try{
-            const allProducts = await Products.find().limit(500);
+            const allProducts = await Products.find().select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5').limit(500);
             return res.json(allProducts);
         }catch(error){
             return res.send({status:400, success: false, msg:'Something went wrong'});
