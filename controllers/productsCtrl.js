@@ -1,6 +1,53 @@
 const Products = require('../models/uploadAllProductsModel');
 const csv = require('csvtojson');
 
+class APIfeatures{
+    constructor(query, queryString){
+        this.query = query;
+        this.queryString = queryString;
+    }
+    filtering(){
+        const queryObj = {...this.queryString} //queryString = req.query
+        // console.log({before: queryObj}) //before delete page
+
+        const excludedFields = ['page', 'sort', 'limit']
+        excludedFields.forEach(el => delete(queryObj[el]))
+
+        // console.log({after: queryObj}) //after delete page
+
+        let queryStr = JSON.stringify(queryObj)
+        queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex)\b/g, match=> '$' + match)
+        // console.log({ queryStr})
+
+        // gte = greater than or equal
+        // lte = lesser than or equal
+        // lt = lesser than
+        // gt = geater than 
+        // regex = for text search
+        this.query.find(JSON.parse(queryStr))
+
+        return this;
+    }
+
+    sorting(){
+        if(this.queryString.sort){
+            const sortBy = this.queryString.sort.split(',').join(' ')
+            this.query = this.query.sort(sortBy)
+        }else{
+            this.query = this.query.sort('-createdAt')
+        }
+        return this;
+    }
+
+    paginating(){
+        const page = this.queryString.page * 1 || 1
+        const limit = this.queryString.limit * 1 || 9
+        const skip = (page - 1) * limit;
+        this.query = this.query.skip(skip).limit(limit)
+        return this;
+    }
+}
+
 const productCtrl ={
 
     // This is get as MRP
@@ -34,14 +81,20 @@ const productCtrl ={
     },
     getSearchQueryProducts:async (req, res) => {
         try{
+
             const {searchText} = req.body;
-            const searchProduct = await Products.findOne({product_name:searchText});
+            console.log(searchText);
 
-            if(!searchProduct){
-                const newsearchProduct = await Products.findOne({barcode:searchText});
+            const searchProduct = await Products.find({"product_name":{$regex: ".*"+searchText+".*"}}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
 
+            //const searchProduct = await Products.findOne({product_name:searchText});
+            if(searchProduct.length > 0){
+                return res.json(searchProduct);
+
+            }else{
+                const newsearchProduct = await Products.findOne({barcode:searchText}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
                 if(!newsearchProduct){
-                    const finalsearchProduct = await Products.findOne({item_code:searchText});
+                    const finalsearchProduct = await Products.findOne({item_code:searchText}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
 
                     if(!finalsearchProduct){
                         return res.send({status:400, success: false, msg:'No Product Founds'});
@@ -49,10 +102,15 @@ const productCtrl ={
                     return res.json(finalsearchProduct);
                 }
                 return res.json(newsearchProduct);
-            }else{
-                return res.json(searchProduct);
+                
             }
-    
+
+
+
+         
+
+
+
             
         }catch(err){
             return  res.send({status:400, success: false, msg:err.msg});
