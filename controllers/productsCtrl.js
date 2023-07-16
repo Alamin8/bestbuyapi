@@ -53,7 +53,7 @@ const productCtrl ={
     // This is get as MRP
     getAllProducts:async (req, res) => {
         try{
-            const allProducts = await Products.find().select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5').limit(500);
+            const allProducts = await Products.find();
             return res.json(allProducts);
         }catch(error){
             return res.send({status:400, success: false, msg:'Something went wrong'});
@@ -85,16 +85,16 @@ const productCtrl ={
             const {searchText} = req.body;
             console.log(searchText);
 
-            const searchProduct = await Products.find({"product_name":{$regex: ".*"+searchText+".*"}}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
+            const searchProduct = await Products.find({"product_name":{$regex: ".*"+searchText+".*"}});
 
             //const searchProduct = await Products.findOne({product_name:searchText});
             if(searchProduct.length > 0){
                 return res.json(searchProduct);
 
             }else{
-                const newsearchProduct = await Products.findOne({barcode:searchText}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
+                const newsearchProduct = await Products.findOne({barcode:searchText});
                 if(!newsearchProduct){
-                    const finalsearchProduct = await Products.findOne({item_code:searchText}).select('-futureUse1').select('-futureUse2').select('-futureUse3').select('-futureUse4').select('-futureUse5').select('-futureUse6').select('-futureUse7').select('-futureUse8').select('-futureUse9').select('-futureUse10').select('-arrayIrem1').select('-arrayIrem2').select('-arrayIrem3').select('-arrayIrem4').select('-arrayIrem5');
+                    const finalsearchProduct = await Products.findOne({item_code:searchText});
 
                     if(!finalsearchProduct){
                         return res.send({status:400, success: false, msg:'No Product Founds'});

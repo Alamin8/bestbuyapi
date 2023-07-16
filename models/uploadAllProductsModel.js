@@ -46,58 +46,10 @@ const productsSchema = new mongoose.Schema({
         default : null,
     },
     futureUse2:{
-        type:String,
-        default : null,
-    },
-    futureUse3:{
-        type:String,
-        default : null,
-    },
-    futureUse4:{
-        type:String,
-        default : null,
-    },
-    futureUse5:{
-        type:String,
-        default : null,
-    },
-    futureUse6:{
-        type:Number,
-        default : null,
-    },
-    futureUse7:{
-        type:Number,
-        default : null,
-    },
-    futureUse8:{
-        type:Number,
-        default : null,
-    },
-    futureUse9:{
-        type:Number,
-        default : null,
-    },
-    futureUse10:{
         type:Number,
         default : null,
     },
     arrayIrem1:{
-        type:Array,
-        default:[]
-    },
-    arrayIrem2:{
-        type:Array,
-        default:[]
-    },
-    arrayIrem3:{
-        type:Array,
-        default:[]
-    },
-    arrayIrem4:{
-        type:Array,
-        default:[]
-    },
-    arrayIrem5:{
         type:Array,
         default:[]
     },
