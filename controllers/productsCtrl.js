@@ -85,16 +85,17 @@ const productCtrl ={
             const {searchText} = req.body;
             console.log(searchText);
 
-            const searchProduct = await Products.find({"product_name":{$regex: ".*"+searchText+".*"}});
+            const searchProduct = await Products.find({"product_name":{$regex: ".*"+searchText+".*"}}).limit(30);
 
-            //const searchProduct = await Products.findOne({product_name:searchText});
+            
             if(searchProduct.length > 0){
                 return res.json(searchProduct);
 
-            }else{
-                const newsearchProduct = await Products.findOne({barcode:searchText});
+            }
+            else{
+                const newsearchProduct = await Products.findOne({barcode:searchText}).limit(10);
                 if(!newsearchProduct){
-                    const finalsearchProduct = await Products.findOne({item_code:searchText});
+                    const finalsearchProduct = await Products.findOne({item_code:searchText}).limit(10);
 
                     if(!finalsearchProduct){
                         return res.send({status:400, success: false, msg:'No Product Founds'});
