@@ -30,6 +30,8 @@ app.use('/user', require('./routes/userRouter' ));
 
 //Routes for mobile apk api
 app.use('/api-apk', require('./routes/productsRouter'));
+app.use('/api-apk', require('./routes/stockManagementRouter'));
+
 
 
 
