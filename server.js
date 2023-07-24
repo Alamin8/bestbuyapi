@@ -20,7 +20,7 @@ app.use('/', productUploadRoute)
 
 
 // Cross Platform Route
-app.use('/user', require('./routes/userRouter'));
+app.use('/user', require('./routes/userRouter' ));
 
 
 
