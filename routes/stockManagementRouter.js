@@ -29,5 +29,6 @@ router.get('/all-stock-title', stockManagementCTRL.getAllStockTitle);
 router.post('/update-stock-title', stockManagementCTRL.updateStockTitle);
 router.post('/delete-stock-title', stockManagementCTRL.deleteStockTitle);
 router.post('/stock-upload', upload.single('file'), stockManagementCTRL.stockUpload);
+router.post('/inventory-posting', stockManagementCTRL.inventory_posting);
 
 module.exports = router;

@@ -92,9 +92,9 @@ const productCtrl ={
                 };
                 await Products.insertMany(products);
             })
-             res.send({status:200, success: true, msg:'Ok Done'});
+             res.send({status:200, success: true, msg:'MRP product Upload Successfull!!!'});
         }catch(error){
-            res.send({status:400, success: false, msg:'Something went wrong'});
+            res.send({status:400, success: false, msg:'Something went wrong from MRP Product Upload'});
         }
     },
     uploadSingleProducts:async (req, res) => {

@@ -22,7 +22,7 @@ const productsSchema = new mongoose.Schema({
         required: true,
     },
     mrp:{
-        type:String,
+        type:Number,
         required: true,
     },
     barcode:{

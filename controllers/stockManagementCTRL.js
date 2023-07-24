@@ -1,6 +1,7 @@
 const csv = require('csvtojson');
 const StockTitle = require('../models/createStockTitleModel');
-const StockProduct = require('../models/stockProductsUploadModel')
+const StockProduct = require('../models/stockProductsUploadModel');
+const Products = require('../models/uploadAllProductsModel');
 
 
 
@@ -78,8 +79,67 @@ const stockManagementCTRL ={
             res.send({status:400, msg:'Something went wrong - Stock Upload'});
         }
 
+    },
+    inventory_posting: async(req, res)=>{
+        try {
+           const {barcode, posting_qty, stock_title} = req.body;
+           const stockPostingQuery = await StockProduct.findOne({ barcode:barcode, stock_title:stock_title });
 
-    }
+
+           if(stockPostingQuery){
+            
+            if(stockPostingQuery.posting_qty == 0 && stock_title == stockPostingQuery.stock_title){
+                if(posting_qty==null || posting_qty==''){
+                    return res.status(500).json({ msg: "Posting Qty Will not be Empty or Null Value" });
+                }
+                await StockProduct.findByIdAndUpdate({_id:stockPostingQuery._id}, {posting_qty});
+                return res.json({status:200, msg:"Product New posting success!"});
+            }else if(stockPostingQuery.posting_qty > 0 && stock_title == stockPostingQuery.stock_title){
+
+                if(posting_qty==null || posting_qty==''){
+                    return res.status(500).json({ msg: "Posting Qty Will not be Empty or Null Value" });
+                }
+                const newPostingQty = Number(stockPostingQuery.posting_qty) + Number(posting_qty);
+                await StockProduct.findByIdAndUpdate({_id:stockPostingQuery._id}, {posting_qty: newPostingQty});
+                return res.json({status:200, msg:"Product posting Increment success!"});
+            }else{
+                return res.json({status:200, msg:"Barcode or posting_Qty or stock_title was Wrong!"});
+            }
+           }
+
+
+           const stockPostingMRPQuery = await Products.findOne({ barcode:barcode });
+
+           if(stockPostingMRPQuery){
+            const product_class = stockPostingMRPQuery.product_class;
+            const item_code = stockPostingMRPQuery.item_code;
+            const product_name = stockPostingMRPQuery.product_name;
+            const vendor_name = stockPostingMRPQuery.vendor_name;
+            const stock_qty = 0;
+            const mrp = stockPostingMRPQuery.mrp;
+            const barcode = stockPostingMRPQuery.barcode;
+            
+
+            const postingNow = new StockProduct({
+                stock_title:stock_title,
+                product_class,
+                item_code,
+                product_name,
+                vendor_name,
+                stock_qty,
+                mrp,
+                barcode,
+                posting_qty:Number(posting_qty)
+            });
+            await postingNow.save();
+            return res.json({status:200, msg:"Product posting from MRP success!"});
+           }
+           return res.json({status:500, msg:"Something went wrong from Inventory Posting"});
+    
+        } catch (err) {
+          return res.status(500).json({ msg: err.message });
+        }
+    },
 
 
 }
